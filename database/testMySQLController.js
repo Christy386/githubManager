@@ -98,7 +98,7 @@ function getTestTable() {
                 console.error('Error connecting to MySQL database:', error);
                 reject(error);
             }else{
-                //console.log('Connected to MySQL database!');
+                console.log('Connected to MySQL database!');
                 //create sql to execute
                 const sqlReq = `
                 SELECT * FROM test;
@@ -136,7 +136,7 @@ function updateProtein() {
                 console.log('Connected to MySQL database!');
                 //create sql to execute
                 const sqlReq = `
-                    UPDATE test
+                    UPDATE customers
                     SET protein = 4
                     WHERE id = 0;
 
@@ -160,18 +160,12 @@ function updateProtein() {
     });
 }
 
-/*updateProtein()
+updateProtein()
     .then((results) => {
         console.log(results[0]);
     })
     .catch((error) => {
         console.error(error);
     })
-*/
 
-const controller = {
-    createTestTable: createTestTable,
-    incertTestContent: incertTestContent,
-    getTestTable: getTestTable
-}
-export default controller;
+

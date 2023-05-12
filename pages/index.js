@@ -10,29 +10,32 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Container from '@mui/material/Container';
 
-export async function getServerSideProps() {
-  const res = await fetch('http://localhost:3000/api/hello');
-  const oldData = await res.json();
 
-  return {
-    props: { oldData },
-  };
-}
+export default function BasicTable() {
 
-export default function BasicTable({oldData}) {
+  const [data, setData] = useState({rows:[]});
 
-  const [data, setData] = useState(oldData);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('/api/hello');
+        console.log(response.data);
+        setData(response.data)
+      } catch (error) {
+        console.error(error);
+      }
+    };
 
-  axios
-    .get('http://localhost:3000/api/hello')
-    .then((res) => {
-      //console.log(data);
-      setData(res.data);
-    })
-    .catch(err => console.log(err))
-  
-  //console.log(data)
+    fetchData();
 
+    const interval = setInterval(() => {
+      fetchData();
+    }, 1000);
+
+    return () => clearInterval(interval);
+
+    
+  }, []);
   
 
   return (
@@ -40,9 +43,9 @@ export default function BasicTable({oldData}) {
       <TableContainer sx={{maxWidth: 900, backgroundColor: "#ddd"}} component={Paper}>
         <Table sx={{ minWidth: 650, borderColor:"#111"}} aria-label="simple table">
           <TableHead >
-            <TableRow sx={{ borderColor:"#111", '& td, & th': { borderBottom: '1px solid #323232' }}}>
-              <TableCell>Dessert (100g serving)</TableCell>
-              <TableCell align="right">Calories</TableCell>
+            <TableRow sx={{ borderColor:"#111", '& td, & th': { borderBottom: '1px solid #323232' }}}>      
+              <TableCell>Dessert (100g serving)</TableCell>      
+              <TableCell align="right">Calories</TableCell>      
               <TableCell align="right">Fat&nbsp;(g)</TableCell>
               <TableCell align="right">Carbs&nbsp;(g)</TableCell>
               <TableCell align="right">Protein&nbsp;(g)</TableCell>
@@ -52,8 +55,7 @@ export default function BasicTable({oldData}) {
             {data.rows.map((row) => (
               <TableRow
                 key={row.name}
-                sx={{ '& td, & th': { borderBottom: '1px solid black' } }}
-                
+                sx={{ '& td, & th': { borderBottom: '1px solid black' } }}  
               >
                 <TableCell component="th" scope="row">
                   {row.name}
@@ -66,7 +68,7 @@ export default function BasicTable({oldData}) {
             ))}
           </TableBody>
         </Table>
-      </TableContainer>  
+      </TableContainer>
     </Container>
       
   );
